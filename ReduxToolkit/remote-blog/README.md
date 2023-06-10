@@ -3,3 +3,6 @@ yarn add tailwindcss postcss autoprefixer
 npx tailwindcss init -p
 yarn add -D prettier-plugin-tailwindcss
 yarn add @reduxjs/toolkit react-redux
+--------------------------------------
+remote-blog
+yarn add axios
