@@ -13,8 +13,11 @@ function isPayloadErrorMessage(payload: unknown): payload is {
   )
 }
 export const rtkQueryErrorLogger: Middleware = (api: MiddlewareAPI) => (next) => (action: AnyAction) => {
-  if (action.error.name === 'CustomeError') {
-    toast.warn(action.error.message)
+  if (isRejected(action)) {
+    if (action.error.name === 'CustomError') {
+      // Những lỗi liên quan đến quá trình thực thi
+      toast.warn(action.error.message)
+    }
   }
 
   if (isRejectedWithValue(action)) {
