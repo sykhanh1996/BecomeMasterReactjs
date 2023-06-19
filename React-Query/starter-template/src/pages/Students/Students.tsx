@@ -5,7 +5,6 @@ import { Students as StudentsType } from 'types/students.type'
 import { useQuery } from '@tanstack/react-query'
 import { useSearchParams } from 'react-router-dom'
 import { useQueryString } from 'utils/utils'
-i
 
 export default function Students() {
   // const [students, setStudents] = useState<StudentsType>([])
