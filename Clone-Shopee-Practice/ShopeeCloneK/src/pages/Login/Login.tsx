@@ -1,8 +1,18 @@
-import { Link } from 'react-router-dom'
+import { useContext } from 'react'
+import { useForm } from 'react-hook-form'
+import { Link, useNavigate } from 'react-router-dom'
 import Button from 'src/components/Button'
 import Input from 'src/components/Input'
 
 export default function Login() {
+  // const { setIsAuthenticated, setProfile } = useContext(AppContext)
+  const navigate = useNavigate()
+  const {
+    register,
+    setError,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<FormData>()
   return (
     <div className='bg-orange'>
       <div>
