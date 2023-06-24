@@ -1,8 +1,25 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Button from 'src/components/Button'
 import Input from 'src/components/Input'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useForm } from 'react-hook-form'
+import { useContext } from 'react'
+import {schema, Schema } from 'src/utils/rules'
+
+type FormData = Pick<Schema, 'email' | 'password' | 'confirm_password'>
+const registerSchema = schema.pick(['email', 'password', 'confirm_password'])
 
 export default function Register() {
+    // const { setIsAuthenticated, setProfile } = useContext(AppContext)
+  const navigate = useNavigate()
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors }
+  } = useForm<FormData>({
+    resolver: yupResolver(registerSchema)
+  })
   return (
     <div className='bg-orange'>
       <div className='container'>
