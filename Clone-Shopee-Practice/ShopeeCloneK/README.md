@@ -5,3 +5,12 @@ yarn add -D @types/node
 yarn add react-router-dom
 
 yarn add react-hook-form
+
+yarn add @hookform/resolvers yup
+
+yarn add axios @tanstack/react-query @tanstack/react-query-devtools
+
+yarn add lodash
+yarn add -D @types/lodash
+
+-yarn add react-toastify
