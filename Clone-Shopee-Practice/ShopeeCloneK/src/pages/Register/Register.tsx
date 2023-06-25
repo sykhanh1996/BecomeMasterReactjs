@@ -1,16 +1,23 @@
 import { Link, useNavigate } from 'react-router-dom'
-import Button from 'src/components/Button'
-import Input from 'src/components/Input'
-import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm } from 'react-hook-form'
-import { useContext } from 'react'
-import {schema, Schema } from 'src/utils/rules'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useMutation } from '@tanstack/react-query'
+// Không có tính năng tree-shaking
+// import { omit } from 'lodash'
+
+// Import chỉ mỗi function omit
+import omit from 'lodash/omit'
+
+import { schema, Schema } from 'src/utils/rules'
+import Input from 'src/components/Input'
+import authApi from 'src/apis/auth.api'
+import Button from 'src/components/Button'
 
 type FormData = Pick<Schema, 'email' | 'password' | 'confirm_password'>
 const registerSchema = schema.pick(['email', 'password', 'confirm_password'])
 
 export default function Register() {
-    // const { setIsAuthenticated, setProfile } = useContext(AppContext)
+  // const { setIsAuthenticated, setProfile } = useContext(AppContext)
   const navigate = useNavigate()
   const {
     register,
@@ -20,34 +27,60 @@ export default function Register() {
   } = useForm<FormData>({
     resolver: yupResolver(registerSchema)
   })
+  const registerAccountMutation = useMutation({
+    mutationFn: (body: Omit<FormData, 'confirm_password'>) => authApi.registerAccount(body)
+  })
+  const onSubmit = handleSubmit((data) => {
+    const body = omit(data, ['confirm_password'])
+    registerAccountMutation.mutate(body, {
+      onSuccess: (data) => {
+        navigate('/')
+      }
+    })
+  })
   return (
     <div className='bg-orange'>
       <div className='container'>
         <div className='grid grid-cols-1 py-12 lg:grid-cols-5 lg:py-32 lg:pr-10'>
           <div className='lg:col-span-2 lg:col-start-4'>
-            <form className='rounded bg-white p-10 shadow-sm' noValidate>
+            <form className='rounded bg-white p-10 shadow-sm' onSubmit={onSubmit} noValidate>
               <div className='text-2xl'>Đăng ký</div>
-              <Input name='email' type='email' className='mt-8' placeholder='Email' />
+              <Input
+                name='email'
+                register={register}
+                type='email'
+                className='mt-8'
+                errorMessage={errors.email?.message}
+                placeholder='Email'
+              />
               <Input
                 name='password'
+                register={register}
                 type='password'
                 className='mt-2'
                 classNameEye='absolute right-[5px] h-5 w-5 cursor-pointer top-[12px]'
+                errorMessage={errors.password?.message}
                 placeholder='Password'
                 autoComplete='on'
               />
 
               <Input
                 name='confirm_password'
+                register={register}
                 type='password'
                 className='mt-2'
                 classNameEye='absolute right-[5px] h-5 w-5 cursor-pointer top-[12px]'
+                errorMessage={errors.password?.message}
                 placeholder='Confirm Password'
                 autoComplete='on'
               />
 
               <div className='mt-2'>
-                <Button className='flex w-full items-center justify-center bg-red-500 px-2 py-4 text-sm uppercase text-white hover:bg-red-600'>
+                <Button
+                  className='flex w-full items-center justify-center bg-red-500 px-2 py-4 text-sm uppercase text-white hover:bg-red-600'
+                  isLoading={registerAccountMutation.isLoading}
+                  disabled={registerAccountMutation.isLoading}
+                >
                   Đăng ký
                 </Button>
               </div>
